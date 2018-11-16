@@ -504,7 +504,7 @@ function! DB_getVisualBlock() range
     let curline     = line("'<")
     let curcol      = virtcol("'<")
 
-    silent normal gvy
+    silent normal! gvy
     let vis_cmd = @"
     let @" = save
 
