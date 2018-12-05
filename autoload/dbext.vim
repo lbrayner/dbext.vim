@@ -3717,14 +3717,14 @@ function! s:DB_PGSQL_execSql(str)
 
     let dbext_bin = s:DB_fullPath2Bin(dbext#DB_getWType("bin"))
 
-    let cmd = dbext_bin .  ' ' .
+    let cmd = dbext_bin .  ' -q ' .
                 \ s:DB_option('', dbext#DB_getWType("cmd_options"), ' ') .
                 \ s:DB_option('-d ', s:DB_get("dbname"), ' ') .
                 \ s:DB_option('-U ', s:DB_get("user"), ' ') .
                 \ s:DB_option('-h ', s:DB_get("host"), ' ') .
                 \ s:DB_option('-p ', s:DB_get("port"), ' ') .
                 \ s:DB_option(' ', dbext#DB_getWTypeDefault("extra"), '') .
-                \ ' -q -f ' . s:dbext_tempfile
+                \ ' -f ' . s:dbext_tempfile
     let result = s:DB_runCmd(cmd, output, "")
 
     return result
