@@ -3494,7 +3494,7 @@ function! s:DB_ORA_execSql(str)
     " Added quit to the end of the command to exit SQLPLUS
     if output !~ s:DB_escapeStr(terminator) .
                 \ '['."\n".' \t]*$'
-        let output = output . "\n" . terminator
+        let output = output . terminator
      endif
 
     " Added quit to the end of the command to exit SQLPLUS
