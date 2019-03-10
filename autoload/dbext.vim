@@ -7444,6 +7444,10 @@ function! s:DB_addToResultBuffer(output, do_clear)
         " xnoremap <buffer> <silent> d   :DBVarRangeAssign!<CR>
     endif
 
+    if !&modifiable
+        setlocal modifiable
+    endif
+
     setlocal modified
     " Create a buffer mapping to close this window
     nnoremap <buffer> q                :DBResultsClose<cr>
