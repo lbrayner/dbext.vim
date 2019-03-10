@@ -7020,8 +7020,7 @@ function! s:DB_runCmd(cmd, sql, result)
         endif
 
         if a:result == ""
-            " let result = system(a:cmd)
-            exe "let result = system('" . a:cmd . "')"
+            let result = system(a:cmd)
         else
             let result = a:result
         endif
