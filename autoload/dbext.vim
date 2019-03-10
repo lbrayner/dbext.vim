@@ -53,6 +53,14 @@ let s:dbext_buffers_connected = []
 " what type of slash to use
 let s:dbext_tempfile = fnamemodify(tempname(), ":h")
 let s:dbext_tempfile = s:dbext_tempfile.(s:dbext_tempfile =~ '^/' ? '/' : '\').'dbext.sql'
+
+if has ("win32") || has("win64")
+    if &shell =~# 'sh' && executable("cygpath")
+        " dropping the last character (probably a line feed)
+        let s:dbext_tempfile = system("cygpath -ma '" . s:dbext_tempfile . "'")[:-2]
+    endif
+endif
+
 "let s:dbext_tempfile = fnamemodify(tempname(), ":h").((has('win32') && ! exists('+shellslash'))?'\':(has('vms')?'':'/')).'dbext.sql'
 "let s:dbext_tempfile = fnamemodify(tempname(), ":h")
 "            \ ((has('win32') && ! exists('+shellslash'))?'\':(has('vms')?'':'/')).
@@ -7012,7 +7020,8 @@ function! s:DB_runCmd(cmd, sql, result)
         endif
 
         if a:result == ""
-            let result = system(a:cmd)
+            " let result = system(a:cmd)
+            exe "let result = system('" . a:cmd . "')"
         else
             let result = a:result
         endif
