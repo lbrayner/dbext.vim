@@ -31,6 +31,10 @@
 " along with this program; if not, write to the Free Software
 " Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
+if exists("*GetSID")
+    let dbext_SID = GetSID(expand('<sfile>:p'))
+endif
+
 if exists('g:loaded_dbext_auto') || &cp
     finish
 endif
@@ -5956,9 +5960,6 @@ function! dbext#DB_execSql(query)
     let curline     = line(".")
     let curcol      = virtcol(".")
 
-   " Add query to internal history
-    call s:DB_historyAdd(query)
-
     " We need some additional database type information to continue
     if s:DB_get("buffer_defaulted") != 1
         let use_defaults = 1
@@ -5994,6 +5995,9 @@ function! dbext#DB_execSql(query)
     "   " Saved Variable List when aborting a query
     "   call dbext#DB_windowClose(s:DB_resBufName())
     endif
+
+   " Add query to internal history
+    call s:DB_historyAdd(query)
 
     " Return to previous location
     " Accounting for beginning of the line
@@ -7151,6 +7155,7 @@ function! s:DB_switchToBuffer(buf_name, buf_file, get_buf_nr_name)
     " bufexists returns an unexpected value
     let res_buf_nr  = (res_buf_nr_str==''?-1:(res_buf_nr_str+0))
     let his_buf_nr  = (his_buf_nr_str==''?-1:(his_buf_nr_str+0))
+    let buf_nr_by_name = bufnr(a:buf_name . '$')
     let buf_nr      = (buf_nr_str==''?-1:(buf_nr_str+0))
     let buf_exists  = bufexists(buf_nr)
 
@@ -7174,6 +7179,9 @@ function! s:DB_switchToBuffer(buf_name, buf_file, get_buf_nr_name)
         elseif bufwinnr(his_buf_nr) > 0
             let open_new_split = 0
             exec bufwinnr(his_buf_nr) . "wincmd w"
+        elseif bufwinnr(buf_nr_by_name) > 0
+            let open_new_split = 0
+            exec bufwinnr(buf_nr_by_name) . "wincmd w"
         endif
 
         if open_new_split == 1
@@ -7225,6 +7233,8 @@ function! s:DB_switchToBuffer(buf_name, buf_file, get_buf_nr_name)
                 let cmd_mod = 'keepalt '
             endif
             exec 'silent! ' . cmd_mod . location . ' ' . win_size . 'split '
+        else
+            exe "resize " . l:buffer_lines
         endif
         " Using :e and hide prevents the alternate buffer
         " from being changed.
@@ -9060,8 +9070,7 @@ function! s:DB_historyAdd(sql)
     " Save the history file
     call s:DB_historySave(1)
 
-    let res_buf_name   = s:DB_resBufName()
-    call dbext#DB_windowClose(s:DB_resBufName())
+    call dbext#DB_windowClose(s:DB_get('history_bufname'))
 
     " Return to original window
     " exec cur_winnr."wincmd w"
