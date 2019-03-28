@@ -6171,11 +6171,15 @@ function! s:DB_getLoginScript(filename)
     return sql
 endfunction
 
+function! s:DB_getObject(text)
+    return substitute(a:text,"[^a-zA-Z0-9_.]","","g")
+endfunction
+
 function! dbext#DB_describeTable(...)
     if(a:0 > 0)
         let table_name = s:DB_getObjectAndQuote(a:1)
     else
-        let table_name = expand("<cWORD>")
+        let table_name = s:DB_getObject(expand("<cWORD>"))
     endif
     if table_name == ""
         call s:DB_warningMsg( 'dbext:You must supply a table name' )
