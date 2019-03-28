@@ -279,11 +279,18 @@ function! dbext#DB_buildLists()
     call add(s:db_dbi_mv, 'Taint')
     call add(s:db_dbi_mv, 'Profile')
 
+    " Flags
+    let s:flag_params_mv = []
+
+    " Result buffer
+    call add(s:flag_params_mv, 'isResultBuffer')
+
     " All parameters
     let s:all_params_mv = []
     call extend(s:all_params_mv, s:conn_params_mv)
     call extend(s:all_params_mv, s:config_params_mv)
     call extend(s:all_params_mv, s:script_params_mv)
+    call extend(s:all_params_mv, s:flag_params_mv)
 
     let loop_count         = 0
     let s:prompt_type_list = "\n0. None"
@@ -7342,6 +7349,21 @@ function! dbext#DB_windowClose(buf_name)
 
     endif
 endfunction "}}}
+
+function! dbext#DB_openResults()
+    if s:DB_get('isResultBuffer')
+        return
+    endif
+    let res_buf_name   = s:DB_resBufName()
+    let buf_nr_by_name = bufnr(res_buf_name . '$')
+    let buf_win_nr = bufwinnr(buf_nr_by_name)
+    if buf_win_nr != -1
+        exec buf_win_nr . "wincmd w"
+        return
+    endif
+    return dbext#DB_windowOpen()
+endfunction
+
 " DB_windowOpen {{{
 function! dbext#DB_windowOpen()
     " Store current window number so we can return to it
@@ -7436,6 +7458,10 @@ function! s:DB_restoreConnParameters()
         call s:DB_set( param, s:DB_get('saved_'.param) )
     endfor
 endfunction "}}}
+function! s:DB_restoreResBufParameters()
+    call s:DB_restoreConnParameters()
+    call s:DB_set('isResultBuffer', 1)
+endfunction
 " addToResultBuffer {{{
 function! s:DB_addToResultBuffer(output, do_clear)
     " Store current window number so we can return to it
@@ -7490,7 +7516,7 @@ function! s:DB_addToResultBuffer(output, do_clear)
         " to the Results buffer so that the user can issue commands
         " within the Results buffer and act on the same database they
         " were originally executing SQL against.
-        call s:DB_restoreConnParameters()
+        call s:DB_restoreResBufParameters()
     endif
 
     if strlen(a:output) > 0
