@@ -6175,7 +6175,7 @@ function! dbext#DB_describeTable(...)
     if(a:0 > 0)
         let table_name = s:DB_getObjectAndQuote(a:1)
     else
-        let table_name = expand("<cword>")
+        let table_name = expand("<cWORD>")
     endif
     if table_name == ""
         call s:DB_warningMsg( 'dbext:You must supply a table name' )
