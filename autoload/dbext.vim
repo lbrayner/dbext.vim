@@ -6799,6 +6799,15 @@ function! s:DB_resBufName()
     return res_buf_name
 endfunction
 " }}}
+function! dbext#DB_isResultBufferVisible()
+    if s:DB_get('isResultBuffer')
+        return 1
+    endif
+    let res_buf_name   = s:DB_resBufName()
+    let buf_nr_by_name = bufnr(res_buf_name . '$')
+    let buf_win_nr = bufwinnr(buf_nr_by_name)
+    return buf_win_nr > 0
+endfunction
 " orientationToggle {{{
 function! dbext#DB_orientationToggle(...)
     let sql = s:dbext_prev_sql
@@ -7359,9 +7368,10 @@ function! dbext#DB_openResults()
     let buf_win_nr = bufwinnr(buf_nr_by_name)
     if buf_win_nr != -1
         exec buf_win_nr . "wincmd w"
-        return
+        return 1
     endif
-    return dbext#DB_windowOpen()
+    call dbext#DB_windowOpen()
+    return 0
 endfunction
 
 " DB_windowOpen {{{
