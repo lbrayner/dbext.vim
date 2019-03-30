@@ -1003,7 +1003,7 @@ function! s:DB_getDefault(name)
     elseif a:name ==# "PGSQL_cmd_terminator"    |return (exists("g:dbext_default_PGSQL_cmd_terminator")?g:dbext_default_PGSQL_cmd_terminator.'':';')
     elseif a:name ==# "PGSQL_SQL_Top_pat"       |return (exists("g:dbext_default_PGSQL_SQL_Top_pat")?g:dbext_default_PGSQL_SQL_Top_pat.'':'\(.*\)')
     elseif a:name ==# "PGSQL_SQL_Top_sub"       |return (exists("g:dbext_default_PGSQL_SQL_Top_sub")?g:dbext_default_PGSQL_SQL_Top_sub.'':'\1 LIMIT @dbext_topX ')
-    elseif a:name ==# "PGSQL_pgpass"            |return (exists("g:dbext_default_PGSQL_pgpass")?g:dbext_default_PGSQL_pgpass.'': ((has('maxunix') || has('unix')) ? '$HOME/.pgpass' : '$HOME/pgpass.conf'))
+    elseif a:name ==# "PGSQL_pgpass"            |return (exists("g:dbext_default_PGSQL_pgpass")?g:dbext_default_PGSQL_pgpass.'': ((has('maxunix') || has('unix')) ? '$HOME/.pgpass' : ((has('win32') || has('win64')) ? '$APPDATA/postgresql/pgpass.conf' : '$HOME/pgpass.conf')))
     elseif a:name ==# "RDB_bin"                 |return (exists("g:dbext_default_RDB_bin")?g:dbext_default_RDB_bin.'':'mc sql$')
     elseif a:name ==# "RDB_cmd_header"          |return (exists("g:dbext_default_RDB_cmd_header")?g:dbext_default_RDB_cmd_header.'':"".
                 \ "set line length 10000\n" .
