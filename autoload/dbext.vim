@@ -7561,6 +7561,12 @@ function! s:DB_addToResultBuffer(output, do_clear)
     setlocal nowrap
     setlocal noswapfile
     setlocal nonumber
+    setlocal bufhidden=unload
+    setlocal foldmethod=manual
+    " setlocal nofoldenable
+    setlocal complete-=wbuU
+    setlocal nowritebackup
+    setlocal undolevels=-1
     " Go to top of output
     norm gg
     " Store the line count of the result buffer
