@@ -7518,7 +7518,7 @@ function! s:DB_addToResultBuffer(output, do_clear)
     endif
     " Delete all the lines prior to this run
     if a:do_clear == "clear"
-        %d_
+        silent %d_
         silent! exec "normal! iConnection: ".conn_props.' at '.strftime("%H:%M")."\<Esc>0"
 
         " We only clear the results buffer at the start of a command
@@ -7557,9 +7557,10 @@ function! s:DB_addToResultBuffer(output, do_clear)
     silent execute "%s/\<C-M>\\+$//e"
     " Dont allow modifications, and do not wrap the text, since
     " the data may be lined up for columns
-    setlocal nomodified
+    setlocal buftype=nofile
+    " setlocal nomodified
     setlocal nowrap
-    setlocal noswapfile
+    " setlocal noswapfile
     setlocal nonumber
     setlocal bufhidden=unload
     setlocal foldmethod=manual
