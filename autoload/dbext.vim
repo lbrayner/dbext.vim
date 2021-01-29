@@ -7562,7 +7562,7 @@ function! s:DB_addToResultBuffer(output, do_clear)
     setlocal nowrap
     " setlocal noswapfile
     setlocal nonumber
-    setlocal bufhidden=unload
+    setlocal bufhidden=wipe
     setlocal foldmethod=manual
     " setlocal nofoldenable
     setlocal complete-=wbuU
